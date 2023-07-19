@@ -23,7 +23,7 @@ cl = VizRuntime("http://localhost:3000", [test_worker.main.root, ...])
 ```
 The visualizer responds to 3 different commands.
 ```python
-cl.viz_graph(graph) # Renders the graph in vizualizer.
+cl.viz_graph(graph) # Renders the graph in the vizualizer.
 cl.type_check_graph(graph) # Highlights nodes which have type errors.
 cl.run_graph(graph) # Shows the runtime state of the graph during execution.
 ```
@@ -34,7 +34,7 @@ cl.run_graph(graph) # Shows the runtime state of the graph during execution.
 ## Development
 This visualizer is built with [React](https://react.dev/), [NextJS 13](https://nextjs.org/) and [Typescript](https://www.typescriptlang.org/).
 ```bash
-npm run dev #Runs vizualizer in development mode.
+npm run dev # Runs vizualizer in development mode.
 ```
 See [NextJS docs](https://nextjs.org/docs) for more information.
 
