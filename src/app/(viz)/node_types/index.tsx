@@ -1,0 +1,197 @@
+import { Close, FullscreenOutlined } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  LinearProgress,
+  Paper,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import React, { ComponentProps } from "react";
+import { createPortal } from "react-dom";
+import { NodeProps, useUpdateNodeInternals } from "reactflow";
+import { Status, capitalize } from "tierkreis-ui/src";
+import { ReactFlowGraph } from "../ReactFlow";
+import { createGraph } from "../utils/createGraph";
+import { RFNode } from "../utils/createRFGraph";
+import { InputHandleArray, OutputHandleArray } from "./utils";
+
+export const CustomNode = (props: NodeProps<RFNode["data"]>) => {
+  const updateNodeInternals = useUpdateNodeInternals();
+  const [isOpen, setIsOpen] = React.useState(false);
+  React.useEffect(() => {
+    updateNodeInternals(props.id);
+  }, [props.id, updateNodeInternals]);
+
+  const data = (() => {
+    const to = document.getElementById("flow-entry");
+    if (props.data.meta?.type === "box") {
+      const graphName = props.data.meta.value?.getGraph()?.getName();
+      const graph = props.data.meta.value?.getGraph();
+      return {
+        title: `Box ${graphName ? `- ${graphName}` : ""}`,
+        children: (
+          <Box className="resize">
+            <Button
+              variant={isOpen ? "contained" : "outlined"}
+              onClick={() => setIsOpen(!isOpen)}
+              sx={{ mx: 0.5, width: "7rem" }}
+              startIcon={
+                isOpen ? (
+                  <Close></Close>
+                ) : (
+                  <FullscreenOutlined></FullscreenOutlined>
+                )
+              }
+            >
+              {isOpen ? "Close" : "Open"}
+            </Button>
+
+            {to && isOpen && graph
+              ? createPortal(
+                  <ReactFlowGraph
+                    {...createGraph({
+                      graph,
+                    })}
+                  />,
+
+                  to
+                )
+              : null}
+          </Box>
+        ),
+      };
+    }
+    if (props.data.meta?.type === "input") {
+      return {
+        title: `Input`,
+      };
+    }
+    if (props.data.meta?.type === "match") {
+      return {
+        title: `Match`,
+      };
+    }
+    if (props.data.meta?.type === "output") {
+      return {
+        title: `Output`,
+      };
+    }
+    if (props.data.meta?.type === "const") {
+      return {
+        title: `Constant - ${capitalize(props.data.meta.value?.type ?? "")}`,
+        children: props.data.meta.value?.stringValue,
+      };
+    }
+    if (props.data.meta?.type === "function") {
+      return {
+        title: `Function`,
+        children: props.data?.meta.value.name,
+      };
+    }
+    if (props.data.meta?.type === "tag") {
+      return {
+        title: `Tag`,
+        children: props.data.meta.value,
+      };
+    }
+  })();
+  const status = props.data.runtimeStatus;
+  type Colors = NonNullable<ComponentProps<typeof Status>["color"]>;
+  const colorMap: {
+    [k in NonNullable<(typeof props)["data"]["runtimeStatus"]>]: Colors;
+  } = {
+    COMPLETE: "success",
+    IDLE: "info",
+    RUNNING: "warning",
+  };
+
+  const node = (
+    <Paper
+      sx={{
+        minWidth: 250,
+        borderRadius: 2,
+        borderWidth: "2px",
+        filter: `drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08))`,
+        borderColor:
+          props.data.typecheck.status === "ERROR"
+            ? "error.main"
+            : "border.main",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          pt: 1,
+          pb: 0.5,
+          px: 1,
+          alignItems: "center",
+          bgcolor: `${colorMap[status]}.light`,
+        }}
+      >
+        <Typography
+          variant="body2"
+          fontWeight={600}
+          sx={{ ml: 1, color: "white" }}
+        >
+          {data?.title}
+        </Typography>
+      </Box>
+      {status === "RUNNING" ? (
+        <LinearProgress color="warning" />
+      ) : (
+        <Box sx={{ height: "4px", bgcolor: "border.main", width: "100%" }} />
+      )}
+
+      <Box
+        sx={{
+          display: "flex",
+          py: 2,
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <InputHandleArray handles={props.data.portsIn} />
+        <Box
+          sx={{
+            px: 0,
+            maxWidth: "9rem",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {data?.children}
+        </Box>
+        <OutputHandleArray handles={props.data.portsOut} />
+      </Box>
+    </Paper>
+  );
+
+  return props.data.typecheck.status === "ERROR" ? (
+    <Tooltip
+      arrow
+      PopperProps={{
+        sx: {
+          maxWidth: "none",
+        },
+      }}
+      placement="left"
+      title={
+        <Box sx={{ maxHeight: "95vh", overflowY: "auto" }}>
+          <Typography
+            variant="caption"
+            sx={{ color: "red", textTransform: "uppercase" }}
+          >
+            {props.data.typecheck.errorData?.type} Error
+          </Typography>
+          <Box sx={{ width: "30rem", whiteSpace: "pre" }}>
+            {props.data.typecheck.errorData?.message}
+          </Box>
+        </Box>
+      }
+    >
+      {node}
+    </Tooltip>
+  ) : (
+    node
+  );
+};

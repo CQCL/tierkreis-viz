@@ -1,0 +1,3 @@
+[submodule "tierkreis"]
+	path = tierkreis
+	url = https://github.com/CQCL/tierkreis
