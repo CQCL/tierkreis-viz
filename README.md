@@ -14,6 +14,7 @@ npm run build
 npm run start
 ```
 
+
 ## Using the vizualizer
 `tierkreis/examples/viz_demo.ipynb` and `tierkreis/examples/variational-viz.ipynb` contain a few example notebooks to get started. Connecting to the vizualiser requires instrumenting tierkreis with the VizRuntime plugin. 
 ```python
@@ -28,6 +29,8 @@ cl.viz_graph(graph) # Renders the graph in the vizualizer.
 cl.type_check_graph(graph) # Highlights nodes which have type errors.
 cl.run_graph(graph) # Shows the runtime state of the graph during execution.
 ```
+<img width="1512" alt="Screenshot 2023-07-20 at 00 04 03" src="https://github.com/CQCL/tierkreis-viz/assets/104831665/55ad9508-60d9-4228-a855-1d2c648d7f51">
+
 
 > **⚠️ Note:**
 > Runtime updates are not currently supported for nested graphs (box types). We recommend unboxing nested graphs if you would like accurate visual runtime updates.
