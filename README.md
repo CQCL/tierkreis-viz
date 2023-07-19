@@ -32,7 +32,8 @@ cl.run_graph(graph) # Shows the runtime state of the graph.
 
 Example of a tierkreis graph being run with the visualizer:
 
-<img width="1512" alt="Screenshot 2023-07-20 at 00 04 03" src="https://github.com/CQCL/tierkreis-viz/assets/104831665/55ad9508-60d9-4228-a855-1d2c648d7f51">
+
+<img width="1512" alt="Screenshot 2023-07-20 at 00 12 38" src="https://github.com/CQCL/tierkreis-viz/assets/104831665/ba18af83-6eef-4475-8a2c-6ea8c97c8ac4">
 
 
 > **⚠️ Note:**
