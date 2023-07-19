@@ -25,9 +25,7 @@ export const NoDataScreen = () => {
         sx={{ mt: 2, textAlign: "center", lineHeight: 2 }}
         maxWidth="45rem"
       >
-        {`Connect to the visualizer using the VizRunTime plugin. By default data
-                  will be sent to http://localhost:3000. If you are running the demo
-                  docker container, you shouldn't need to configure anything.`}
+        {`Connect to the visualizer using the tierkreis VizRuntime plugin.`}
       </Typography>
     </Box>
   );
