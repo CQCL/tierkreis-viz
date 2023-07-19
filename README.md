@@ -9,6 +9,7 @@ docker run -it -p 3000:3000 --rm tierkreis-viz # Runs on port 3000.
 ### ⬣ Node
 Make sure you are using [node](https://nodejs.org/en) v16.8 or higher.
 ```bash
+npm i
 npm run build
 npm run start
 ```
