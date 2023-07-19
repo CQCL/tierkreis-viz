@@ -27,8 +27,11 @@ The visualizer responds to 3 different commands.
 ```python
 cl.viz_graph(graph) # Renders the graph in the vizualizer.
 cl.type_check_graph(graph) # Highlights nodes which have type errors.
-cl.run_graph(graph) # Shows the runtime state of the graph during execution.
+cl.run_graph(graph) # Shows the runtime state of the graph.
 ```
+
+Example of a tierkreis graph being run with the visualizer:
+
 <img width="1512" alt="Screenshot 2023-07-20 at 00 04 03" src="https://github.com/CQCL/tierkreis-viz/assets/104831665/55ad9508-60d9-4228-a855-1d2c648d7f51">
 
 
