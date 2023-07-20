@@ -1,5 +1,6 @@
 "use client";
-import { Box, Divider, Typography } from "@mui/material";
+import { WarningAmberOutlined } from "@mui/icons-material";
+import { Box, CircularProgress, Divider, Typography } from "@mui/material";
 import React from "react";
 import {
   Background,
@@ -50,6 +51,13 @@ export const ReactFlowGraph = (
     nodePositions,
   });
 
+  const graphIsRunning = graph.nodes.some(
+    (node) => node.runtimeStatus === "RUNNING"
+  );
+  const graphHasTypeError = graph.nodes.some(
+    (node) => node.typecheck.status === "ERROR"
+  );
+
   return (
     <Box
       sx={{
@@ -58,7 +66,7 @@ export const ReactFlowGraph = (
       }}
     >
       <Divider></Divider>
-      <Typography
+      <Box
         sx={{
           px: 1,
           py: 0.5,
@@ -67,10 +75,32 @@ export const ReactFlowGraph = (
           top: 0,
           left: 0,
           zIndex: 50,
+          display: "flex",
+          flexDirection: "column",
+          gap: 1.25,
         }}
       >
-        {graph.name || "Unnamed Graph"}
-      </Typography>
+        <Typography>{graph.name || "Unnamed Graph"}</Typography>
+        {graphIsRunning ? (
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <CircularProgress
+              style={{
+                width: "1.25rem",
+                height: "1.25rem",
+                marginRight: "0.5rem",
+              }}
+              color="warning"
+            ></CircularProgress>
+            <Typography>Graph is running...</Typography>
+          </Box>
+        ) : null}
+        {graphHasTypeError ? (
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <WarningAmberOutlined sx={{ color: "error.main", mr: 0.7 }} />
+            <Typography>Graph typecheck failed.</Typography>
+          </Box>
+        ) : null}
+      </Box>
       <ReactFlowProvider>
         <ReactFlow
           fitViewOptions={{
