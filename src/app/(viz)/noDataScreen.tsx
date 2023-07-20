@@ -1,4 +1,4 @@
-import { Pending } from "@mui/icons-material";
+import { SearchOff } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
 
 export const NoDataScreen = () => {
@@ -13,7 +13,7 @@ export const NoDataScreen = () => {
         justifyContent: "center",
       }}
     >
-      <Pending
+      <SearchOff
         sx={{ height: "4rem", width: "4rem", mb: 3, color: "border.main" }}
         fontSize="large"
       />
