@@ -106,6 +106,20 @@ export const CustomNode = (props: NodeProps<RFNode["data"]>) => {
     RUNNING: "warning",
   };
 
+  const children = (() => {
+    const idata = data?.children;
+    try {
+      if (typeof idata === "string") {
+        const x = JSON.stringify(JSON.parse(idata), null, 2);
+        console.log("got here", data?.title, x);
+        return x;
+      }
+      return idata;
+    } catch (err) {
+      return idata;
+    }
+  })();
+
   const node = (
     <Paper
       sx={{
@@ -152,15 +166,45 @@ export const CustomNode = (props: NodeProps<RFNode["data"]>) => {
         }}
       >
         <InputHandleArray handles={props.data.portsIn} />
-        <Box
-          sx={{
-            px: 0,
-            maxWidth: "9rem",
-            textOverflow: "ellipsis",
+        <Tooltip
+          disableHoverListener={typeof children !== "string"}
+          placement="right"
+          PopperProps={{
+            sx: {
+              width: "40rem",
+            },
           }}
+          title={
+            <Box
+              sx={{
+                whiteSpace: "pre",
+                maxHeight: "60vh",
+                overflowY: "auto",
+                maxWidth: "60vw",
+              }}
+            >
+              {typeof children === "string" ? children : null}
+            </Box>
+          }
         >
-          {data?.children}
-        </Box>
+          <Box
+            sx={{
+              px: 0,
+              maxWidth: "9rem",
+              maxHeight: "10rem",
+
+              textOverflow: "ellipsis",
+            }}
+          >
+            {typeof children === "string" ? (
+              <Typography textOverflow="ellipsis" noWrap>
+                {children}
+              </Typography>
+            ) : (
+              children
+            )}
+          </Box>
+        </Tooltip>
         <OutputHandleArray handles={props.data.portsOut} />
       </Box>
     </Paper>
