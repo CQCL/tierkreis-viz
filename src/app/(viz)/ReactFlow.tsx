@@ -49,7 +49,7 @@ export const ReactFlowGraph = (
     graph,
     nodePositions,
   });
-  React.useEffect(() => {}, []);
+
   return (
     <Box
       sx={{
