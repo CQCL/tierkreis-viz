@@ -1,10 +1,10 @@
-import { readFileSync, writeFileSync } from "fs";
 import { NextResponse } from "next/server";
+import { readFromStorageDir, writeToStorageDir } from "../utils";
 
 export async function POST(req: Request) {
   console.info("Received runtime data.");
-  writeFileSync(
-    `./storage/streamList.bin`,
+  writeToStorageDir(
+    `streamList.bin`,
     Buffer.from(await (await req.blob()).arrayBuffer())
   );
   return NextResponse.json({ message: "Saved data." });
@@ -12,9 +12,8 @@ export async function POST(req: Request) {
 
 export async function GET() {
   try {
-    return new Response(readFileSync("./storage/streamList.bin"));
+    return new Response(readFromStorageDir("streamList.bin"));
   } catch (error) {
-    console.error(`Failed to decode stream list: ${JSON.stringify(error)}`);
     return new Response("Runtime information not found.", {
       status: 404,
     });

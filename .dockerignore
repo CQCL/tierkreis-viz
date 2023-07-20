@@ -3,3 +3,4 @@ public
 .gitignore
 generateTSDecoders.sh
 README.md
+.storage

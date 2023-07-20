@@ -8,6 +8,14 @@ import { ReactFlowGraph } from "./ReactFlow";
 import { NoDataScreen } from "./noDataScreen";
 import { createGraph } from "./utils/createGraph";
 
+const parseResponse = async (res: Response) => {
+  if (res.ok) {
+    const blob = await res.blob();
+    const buffer = await blob.arrayBuffer();
+    return buffer;
+  }
+  return undefined;
+};
 export default function Page() {
   const {
     data: { graphBinary, runtimeBinary, typecheckBinary },
@@ -16,16 +24,14 @@ export default function Page() {
     async () => {
       const [graphBinary, runtimeBinary, typecheckBinary] = await Promise.all([
         fetch("http://localhost:3000/api/graph")
-          .then((res) => res.blob())
-          .then((x) => x.arrayBuffer())
+          .then(parseResponse)
           .catch(() => undefined),
+
         fetch("http://localhost:3000/api/streamList")
-          .then((res) => res.blob())
-          .then((x) => x.arrayBuffer())
+          .then(parseResponse)
           .catch(() => undefined),
         fetch("http://localhost:3000/api/typeErrors")
-          .then((res) => res.blob())
-          .then((x) => x.arrayBuffer())
+          .then(parseResponse)
           .catch(() => undefined),
       ]);
       return {
@@ -54,6 +60,7 @@ export default function Page() {
   const outputStream = runtimeBinary
     ? OutputStream.deserializeBinary(new Uint8Array(runtimeBinary))
     : undefined;
+
   const typeErrors = typecheckBinary
     ? TypeErrors.deserializeBinary(new Uint8Array(typecheckBinary))
     : undefined;

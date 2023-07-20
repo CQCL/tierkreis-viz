@@ -37,6 +37,6 @@ next-env.d.ts
 .npmrc
 
 .venv
-storage/*
 **/__pycache__/
+.storage
 
