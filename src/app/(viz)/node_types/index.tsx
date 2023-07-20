@@ -21,7 +21,7 @@ export const CustomNode = (props: NodeProps<RFNode["data"]>) => {
   const [isOpen, setIsOpen] = React.useState(false);
   React.useEffect(() => {
     updateNodeInternals(props.id);
-  }, [props.id, updateNodeInternals]);
+  }, [props, updateNodeInternals]);
 
   const data = (() => {
     const to = document.getElementById("flow-entry");
