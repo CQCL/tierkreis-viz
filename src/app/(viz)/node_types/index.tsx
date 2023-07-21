@@ -1,3 +1,4 @@
+import styled from "@emotion/styled";
 import { Close, FullscreenOutlined } from "@mui/icons-material";
 import {
   Box,
@@ -5,16 +6,28 @@ import {
   LinearProgress,
   Paper,
   Tooltip,
+  TooltipProps,
   Typography,
+  tooltipClasses,
 } from "@mui/material";
 import React, { ComponentProps } from "react";
 import { createPortal } from "react-dom";
 import { NodeProps, useUpdateNodeInternals } from "reactflow";
 import { Status, capitalize } from "tierkreis-ui/src";
+import { z } from "zod";
+import CircuitRenderer from "../CircuitRenderer";
 import { ReactFlowGraph } from "../ReactFlow";
 import { createGraph } from "../utils/createGraph";
 import { RFNode } from "../utils/createRFGraph";
 import { InputHandleArray, OutputHandleArray } from "./utils";
+
+const NoMaxWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))({
+  [`& .${tooltipClasses.tooltip}`]: {
+    maxWidth: "none",
+  },
+});
 
 export const CustomNode = (props: NodeProps<RFNode["data"]>) => {
   const updateNodeInternals = useUpdateNodeInternals();
@@ -111,13 +124,45 @@ export const CustomNode = (props: NodeProps<RFNode["data"]>) => {
     try {
       if (typeof idata === "string") {
         const x = JSON.stringify(JSON.parse(idata), null, 2);
-        console.log("got here", data?.title, x);
         return x;
       }
       return idata;
     } catch (err) {
       return idata;
     }
+  })();
+
+  const tooltipContent = (() => {
+    const circuitSchema = z.object({
+      bits: z.any(),
+      commands: z.any(),
+    });
+
+    if (typeof children === "string") {
+      try {
+        if (circuitSchema.safeParse(JSON.parse(children)).success) {
+          return (
+            <Box
+              sx={{
+                flexGrow: 1,
+                flexShrink: 1,
+                minWidth: "30rem",
+                alignItems: "center",
+                height: 700,
+                resize: "vertical",
+              }}
+            >
+              <CircuitRenderer circuitDefinition={JSON.parse(children)} />
+            </Box>
+          );
+        }
+      } catch {
+        return children;
+      }
+
+      return children;
+    }
+    return null;
   })();
 
   const node = (
@@ -166,24 +211,18 @@ export const CustomNode = (props: NodeProps<RFNode["data"]>) => {
         }}
       >
         <InputHandleArray handles={props.data.portsIn} />
-        <Tooltip
+        <NoMaxWidthTooltip
           disableHoverListener={typeof children !== "string"}
           placement="right"
-          PopperProps={{
-            sx: {
-              width: "40rem",
-            },
-          }}
           title={
             <Box
               sx={{
                 whiteSpace: "pre",
                 maxHeight: "60vh",
                 overflowY: "auto",
-                maxWidth: "60vw",
               }}
             >
-              {typeof children === "string" ? children : null}
+              {tooltipContent}
             </Box>
           }
         >
@@ -204,7 +243,7 @@ export const CustomNode = (props: NodeProps<RFNode["data"]>) => {
               children
             )}
           </Box>
-        </Tooltip>
+        </NoMaxWidthTooltip>
         <OutputHandleArray handles={props.data.portsOut} />
       </Box>
     </Paper>
