@@ -200,7 +200,6 @@ export const ClientThemeProvider = (props: PropsWithChildren) => {
       <Box
         sx={{
           borderRight: "1px solid",
-          // borderLeft: "8px solid",
           borderColor: "border.main",
           bgcolor: "background.paper",
           display: "flex",
@@ -230,8 +229,8 @@ export const ClientThemeProvider = (props: PropsWithChildren) => {
           >
             {(
               [
-                { value: "dark", icon: LightModeOutlined },
-                { value: "light", icon: DarkModeOutlined },
+                { value: "dark", icon: DarkModeOutlined },
+                { value: "light", icon: LightModeOutlined },
                 { value: "system", icon: ComputerOutlined },
               ] as const
             ).map(({ value, icon: Icon }) => (
